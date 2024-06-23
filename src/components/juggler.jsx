@@ -332,5 +332,5 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
         }
     }, [inputSiteswap]);
     
-    return <canvas ref={canvasRef} width={dimension} height={dimension} className='border border-dashed border-black'></canvas>
+    return <canvas ref={canvasRef} width={dimension} height={dimension} className='border border-black'></canvas>
 }

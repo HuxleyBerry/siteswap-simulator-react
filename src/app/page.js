@@ -1,7 +1,7 @@
 'use client'
 import "./globals.css";
-import Juggler from '../../components/juggler';
-import SiteswapSelector from "../../components/siteswap-selector";
+import Juggler from '../components/juggler';
+import SiteswapSelector from "../components/siteswap-selector";
 import { useState } from 'react';
 
 export default function Home() {
