@@ -195,7 +195,7 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
         return () => {
             window.cancelAnimationFrame(animationFrameId)
         }
-    }, [inputSiteswap, dimension]);
+    }, [inputSiteswap, dimension, beatLength, gravity, showTwosAsHolds, LHoutsideThrows, RHoutsideThrows]);
     
     return <canvas ref={canvasRef} width={dimension} height={dimension} className='border border-black object-fill'></canvas>
 }
