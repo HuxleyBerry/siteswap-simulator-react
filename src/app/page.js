@@ -25,8 +25,8 @@ export default function Home() {
       <div className="pt-0">
         <Juggler dimension={width} inputSiteswap={siteswap} LHoutsideThrows={settings.LHoutsideThrows} RHoutsideThrows={settings.RHoutsideThrows} showTwosAsHolds={settings.twoAsHolds} beatLength={settings.beatLength} gravity={settings.gravity}/>
       </div>
-      <SiteswapSelector clickHandler={(input) => setSiteswap(input)}/>
-      <Settings updateHandler={(settingsInput) => {setSettings(settingsInput); console.log("??")}} currentSettings={settings}/>
+      <SiteswapSelector clickHandler={input => setSiteswap(input)}/>
+      <Settings updateHandler={settingsInput => setSettings(settingsInput)} currentSettings={settings}/>
     </div>
     
   );

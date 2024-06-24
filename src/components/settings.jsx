@@ -1,11 +1,10 @@
-import { useState } from "react"
 export default function Settings({ updateHandler, currentSettings }) {
     //updateHandler(settingsInput);
 
-    return <div className="border border-black rounded-md p-4 w-auto">
+    return <div className="border border-black rounded-md p-4 w-fit h-fit">
         <p className="text-lg text-center">Settings</p>
         <input type="checkbox" onChange={event => updateHandler({ ...currentSettings, twoAsHolds: event.target.checked})}/>
-        <label> Show 2's as holds</label>
+        <label> Show 2&apos;s as holds</label>
         <br />
         <input type="checkbox" onChange={event => updateHandler({ ...currentSettings, LHoutsideThrows: event.target.checked})}/>
         <label> LH outside throws</label>

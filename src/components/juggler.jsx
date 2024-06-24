@@ -8,13 +8,7 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
     let canvasWidth = 0;
     let canvasHeight = 0;
     const canvasRef = useRef(null);
-
-    let animationFrameId;
-    let animationOngoing = false;
-    let startingTime;
-    let juggler;
-    let siteswap;
-    let isSync;
+    const [animationFrameId, setAnimationFrameId] = useState(undefined);
 
     function mod(n, m) {
         return ((n % m) + m) % m;
@@ -153,7 +147,7 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
         }
     }
 
-    function animateJuggler(timeStamp, ctx) {
+    function animateJuggler(timeStamp, ctx, startingTime, siteswap, animationOngoing, juggler, isSync) {
         if (animationOngoing) {
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
             let currentTime = timeStamp - startingTime;
@@ -172,7 +166,7 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
             } else {
                 drawAsyncSiteswap(ctx, juggler, siteswap, beats)
             }
-            animationFrameId = window.requestAnimationFrame((timeStamp) => animateJuggler(timeStamp, ctx));
+            setAnimationFrameId(window.requestAnimationFrame((timeStamp) => animateJuggler(timeStamp, ctx, startingTime, siteswap, animationOngoing, juggler, isSync)))
         }
     }
 
@@ -180,13 +174,14 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
         const ctx = canvasRef.current.getContext('2d');
         canvasHeight = dimension;
         canvasWidth = dimension;
-        startingTime = performance.now();
-        isSync = inputSiteswap.startsWith("(");
-        siteswap = parseSiteswap(inputSiteswap);
-        juggler = getJuggler(calcIdealWorkingHeight(siteswap, canvasHeight, gravity, beatLength));
+        let animationOngoing = false;
+        const startingTime = performance.now();
+        const siteswap = parseSiteswap(inputSiteswap);
+        const isSync = inputSiteswap.startsWith("(");
+        const juggler = getJuggler(calcIdealWorkingHeight(siteswap, canvasHeight, gravity, beatLength));
         if (siteswap.length != 0) {
             animationOngoing = true;
-            animationFrameId = window.requestAnimationFrame((timeStamp) => animateJuggler(timeStamp, ctx));
+            setAnimationFrameId(window.requestAnimationFrame((timeStamp) => animateJuggler(timeStamp, ctx, startingTime, siteswap, animationOngoing, juggler, isSync)));
         } else {
             animationOngoing = false;
             console.log("invalid siteswap")
