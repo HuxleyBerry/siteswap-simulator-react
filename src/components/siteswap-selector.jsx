@@ -12,11 +12,12 @@ export default function SiteswapSelector({clickHandler, getRandom}) {
     function getRandomSiteswap() {
         const randomSiteswap = examples[Math.floor(Math.random()*examples.length)];
         setInput(randomSiteswap);
+        clickHandler(randomSiteswap);
     }
 
-    return <div className="flex flex-row items-center justify-content m-2">
+    return <div className="flex flex-row items-center justify-content">
             <input value={input} placeholder={"534"} className="w-full p-2 h-10 bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-md" onChange={(event) => setInput(event.target.value)}/>
-            <button className='bg-blue-400 text-lg text-black w-full p-2 rounded-lg ml-5' onClick={() => clickHandler(input)}>Go!</button>
-            <button className='bg-red-400 text-lg text-black w-full p-2 rounded-lg ml-5' onClick={getRandomSiteswap}>Random Siteswap</button>
+            <button className='bg-blue-400 text-lg text-black px-4 py-2 rounded-lg mx-2' onClick={() => clickHandler(input)}>Go!</button>
+            <button className='bg-zinc-300 text-lg text-black p-2 rounded-lg' onClick={getRandomSiteswap}>Random</button>
         </div>
 }
