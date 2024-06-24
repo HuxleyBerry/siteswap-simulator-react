@@ -12,7 +12,7 @@ export default function Settings({ updateHandler, currentSettings }) {
         <input type="checkbox" onChange={event => updateHandler({ ...currentSettings, RHoutsideThrows: event.target.checked})}/>
         <label> RH outside throws</label>
         <br />
-        <label className="text-sm font-medium text-gray-900 dark:text-white">Gravity: {currentSettings.gravity}</label>
+        <label className="text-sm font-medium text-gray-900 dark:text-white">Gravity: {(currentSettings.gravity*10000).toFixed(2)}</label>
         <br />
         <input type="range" min="1" max="20" className="w-full h-2 bg-gray-200 rounded-lg cursor-pointer dark:bg-gray-700" onChange={event => updateHandler({ ...currentSettings, gravity: event.target.value/12500})}/>
         <br />

@@ -12,20 +12,21 @@ export default function Home() {
 
   useEffect(() => {
     const width = parseFloat(window.screen.width);
-    if (width < 610){
-      setWidth(width - 10);
+    if (width < 616){
+      setWidth(width - 20);
     } else {
       setWidth(600);
     }
   }, [])
 
   return (
-    <div className="flex flex-col items-center">
-      <p className="text-3xl my-5">Siteswap Simulator</p>
-      <div className="pt-0">
+    <div className="flex flex-row items-center justify-center flex-wrap">
+      <div className="mb-4 px-2">
+        <p className="text-3xl my-5 text-center">Siteswap Simulator</p>
         <Juggler dimension={width} inputSiteswap={siteswap} LHoutsideThrows={settings.LHoutsideThrows} RHoutsideThrows={settings.RHoutsideThrows} showTwosAsHolds={settings.twoAsHolds} beatLength={settings.beatLength} gravity={settings.gravity}/>
+        <SiteswapSelector clickHandler={input => setSiteswap(input)}/>
+          <p className="underline text-blue-600 text-center"><a href="https://en.wikipedia.org/wiki/Siteswap" target="_blank">Explanation</a></p>
       </div>
-      <SiteswapSelector clickHandler={input => setSiteswap(input)}/>
       <Settings updateHandler={settingsInput => setSettings(settingsInput)} currentSettings={settings}/>
     </div>
     
