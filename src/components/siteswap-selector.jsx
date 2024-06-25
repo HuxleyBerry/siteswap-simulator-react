@@ -27,7 +27,7 @@ export default function SiteswapSelector({clickHandler}) {
     }
 
     return <div className="flex flex-row items-center justify-content">
-            <input value={input} placeholder={"Enter siteswap"} className={`w-full p-2 h-10 bg-gray-50 border ${inputHighlighted ? "outline outline-2 outline-offset-0 outline-red-400" : null} border-gray-300 ${inputHighlighted ? "text-red-400" : "text-gray-900"} text-md rounded-md`} onChange={(event) => setInput(event.target.value)} onClick={() => setInputHighlighted(false)}/>
+            <input value={input} placeholder={"Enter siteswap"} className={`w-full min-w-32 p-2 h-10 bg-gray-50 border ${inputHighlighted ? "outline outline-2 outline-offset-0 outline-red-400" : null} border-gray-300 ${inputHighlighted ? "text-red-400" : "text-gray-900"} text-md rounded-md`} onChange={(event) => setInput(event.target.value)} onClick={() => setInputHighlighted(false)}/>
             <button className='bg-blue-400 text-lg text-black px-4 py-2 rounded-lg mx-2' onClick={submitInput}>Go!</button>
             <button className='bg-zinc-300 text-lg text-black p-2 rounded-lg' onClick={getRandomSiteswap}>Random</button>
         </div>

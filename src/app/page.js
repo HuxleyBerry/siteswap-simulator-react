@@ -12,8 +12,8 @@ export default function Home() {
   const [settings, setSettings] = useState({twoAsHolds: false, LHoutsideThrows: false, RHoutsideThrows: false, gravity: 0.0008, beatLength: 300})
 
   function setIdealCanvasWidth() {
-    const width = parseFloat(window.screen.width);
-    const height = parseFloat(window.screen.height);
+    const width = parseFloat(window.innerWidth);
+    const height = parseFloat(window.innerHeight);
     if (width < 616 || height < 680){
       setWidth(Math.min(width - 20, height - 80));
     } else {
