@@ -5,15 +5,13 @@ import { parseSiteswap } from '@/utils/siteswap-validation';
 import { getMaxThrow, calcIdealWorkingHeight, getRotation, flipAngle } from '@/utils/other';
 
 export default function Juggler({dimension, inputSiteswap, beatLength, gravity, showTwosAsHolds, LHoutsideThrows, RHoutsideThrows}) {
-    let canvasWidth = 0;
-    let canvasHeight = 0;
     const canvasRef = useRef(null);
 
     function mod(n, m) {
         return ((n % m) + m) % m;
     }
 
-    function getJuggler(workingHeight) {
+    function getJuggler(workingHeight, canvasWidth, canvasHeight) {
         return {
             headSize: workingHeight * 0.13,
             headY: canvasHeight - workingHeight * 0.8,
@@ -38,7 +36,7 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
         };
     }
 
-    function drawPerson(ctx, j, leftRotation, rightRotation) {
+    function drawPerson(ctx, j, leftRotation, rightRotation, canvasWidth) {
         // draw head
         ctx.beginPath();
         ctx.arc(canvasWidth * 0.5, j.headY, j.headSize, 0, 2 * Math.PI);
@@ -58,7 +56,7 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
         ctx.stroke();
     }
 
-    function drawBall(ctx, juggler, startingHand, ballThrow, progress) {
+    function drawBall(ctx, juggler, startingHand, ballThrow, progress, canvasWidth) {
         ctx.fillStyle = "red";
         ctx.beginPath();
         var x, y, travelDist, beats;
@@ -107,14 +105,14 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
         ctx.fill();
     }
 
-    function showInvalidSiteSwap(ctx) {
+    function showInvalidSiteSwap(ctx, canvasWidth, canvasHeight) {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight)
         ctx.fillStyle = "black";
         ctx.font = `${canvasWidth/15}px Arial`;
         ctx.fillText("Invalid Siteswap", canvasWidth * 0.5 - ctx.measureText("Invalid Siteswap").width * 0.5, canvasHeight * 0.5);
     }
 
-    function getSiteswapTextFontSize(ctx, siteswapName) {
+    function getSiteswapTextFontSize(ctx, siteswapName, canvasWidth) {
         let fontSize = canvasWidth/20;
         ctx.font = `${fontSize}px Arial`;
         while (ctx.measureText(inputSiteswap).width >= canvasWidth*0.4) {
@@ -130,7 +128,7 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
         ctx.fillText(inputSiteswap, 10, 10 + fontSize);
     }
 
-    function drawAsyncSiteswap(ctx, juggler, siteswap, beats) {
+    function drawAsyncSiteswap(ctx, juggler, siteswap, beats, canvasWidth) {
         let maxThrowSize = getMaxThrow(siteswap); //amount of beats we need to backtrack
         for (let i = 0; i < maxThrowSize; i++) {
             let hand, throwHeights, progress;
@@ -143,13 +141,13 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
             throwHeights = siteswap[mod(Math.floor(beats) - i - 1, siteswap.length)];
             throwHeights.forEach((height) => {
                 if (progress <= height) {
-                    drawBall(ctx, juggler, hand, height, progress);
+                    drawBall(ctx, juggler, hand, height, progress, canvasWidth);
                 }
             });
         }
     }
 
-    function drawSyncSiteswap(ctx, juggler, siteswap, beats) {
+    function drawSyncSiteswap(ctx, juggler, siteswap, beats, canvasWidth) {
         if (siteswap.length % 2 != 0) throw "Error: somehow sync siteswap has odd number of throws!";;
         let maxThrowSize = getMaxThrow(siteswap); //amount of beats we need to backtrack
         for (let i = 0; i < maxThrowSize; i += 2) {
@@ -158,12 +156,12 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
             let rightThrowHeights = siteswap[mod(Math.floor(beats * 0.5) * 2 - i - 2, siteswap.length)];
             leftThrowHeights.forEach((height) => {
                 if (progress <= Math.abs(height)) {
-                    drawBall(ctx, juggler, "left", height, progress);
+                    drawBall(ctx, juggler, "left", height, progress, canvasWidth);
                 }
             });
             rightThrowHeights.forEach((height) => {
                 if (progress <= Math.abs(height)) {
-                    drawBall(ctx, juggler, "right", height, progress);
+                    drawBall(ctx, juggler, "right", height, progress, canvasWidth);
                 }
             });
         }
@@ -172,14 +170,14 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
 
     useEffect(() => {
         const ctx = canvasRef.current.getContext('2d');
-        canvasHeight = dimension;
-        canvasWidth = dimension;
+        const canvasHeight = dimension;
+        const canvasWidth = dimension;
         let animationFrameId;
         const startingTime = performance.now();
         const siteswap = parseSiteswap(inputSiteswap);
         const isSync = inputSiteswap.startsWith("(");
-        const juggler = getJuggler(calcIdealWorkingHeight(siteswap, canvasHeight, gravity, beatLength));
-        const fontSize = getSiteswapTextFontSize(ctx, inputSiteswap);
+        const juggler = getJuggler(calcIdealWorkingHeight(siteswap, canvasHeight, gravity, beatLength), canvasWidth, canvasHeight);
+        const fontSize = getSiteswapTextFontSize(ctx, inputSiteswap, canvasWidth);
 
         function animateJuggler(timeStamp) {
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -194,11 +192,11 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
                 rightRotation = flipAngle(getRotation(beats, 1.5), RHoutsideThrows);
             }
             drawSiteswapName(ctx, fontSize);
-            drawPerson(ctx, juggler, leftRotation, rightRotation);
+            drawPerson(ctx, juggler, leftRotation, rightRotation, canvasWidth, canvasHeight);
             if (isSync) {
-                drawSyncSiteswap(ctx, juggler, siteswap, beats)
+                drawSyncSiteswap(ctx, juggler, siteswap, beats, canvasWidth)
             } else {
-                drawAsyncSiteswap(ctx, juggler, siteswap, beats)
+                drawAsyncSiteswap(ctx, juggler, siteswap, beats, canvasWidth)
             }
             animationFrameId = window.requestAnimationFrame(animateJuggler);
         }
@@ -206,7 +204,7 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
         if (siteswap.length != 0) {
             animationFrameId = window.requestAnimationFrame(animateJuggler);
         } else {
-            showInvalidSiteSwap(ctx);
+            showInvalidSiteSwap(ctx, canvasWidth, canvasHeight);
         }
 
         return () => {

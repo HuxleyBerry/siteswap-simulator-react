@@ -11,7 +11,7 @@ export default function Home() {
   const [width, setWidth] = useState(100);
   const [settings, setSettings] = useState({twoAsHolds: false, LHoutsideThrows: false, RHoutsideThrows: false, gravity: 0.0008, beatLength: 300})
 
-  useEffect(() => {
+  function setIdealCanvasWidth() {
     const width = parseFloat(window.screen.width);
     const height = parseFloat(window.screen.height);
     if (width < 616 || height < 680){
@@ -19,6 +19,11 @@ export default function Home() {
     } else {
       setWidth(600);
     }
+  }
+  
+  useEffect(() => {
+    setIdealCanvasWidth();
+    window.onresize = setIdealCanvasWidth;
   }, [])
 
   return (
