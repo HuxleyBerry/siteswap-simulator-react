@@ -110,8 +110,24 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
     function showInvalidSiteSwap(ctx) {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight)
         ctx.fillStyle = "black";
-        ctx.font = "30px Arial";
+        ctx.font = `${canvasWidth/15}px Arial`;
         ctx.fillText("Invalid Siteswap", canvasWidth * 0.5 - ctx.measureText("Invalid Siteswap").width * 0.5, canvasHeight * 0.5);
+    }
+
+    function getSiteswapTextFontSize(ctx, siteswapName) {
+        let fontSize = canvasWidth/20;
+        ctx.font = `${fontSize}px Arial`;
+        while (ctx.measureText(inputSiteswap).width >= canvasWidth*0.4) {
+            fontSize *= 0.75;
+            ctx.font = `${fontSize}px Arial`;
+        }
+        return fontSize;
+    }
+
+    function drawSiteswapName(ctx, fontSize) {
+        ctx.fillStyle = "black";
+        ctx.font = `${fontSize}px Arial`;
+        ctx.fillText(inputSiteswap, 10, 10 + fontSize);
     }
 
     function drawAsyncSiteswap(ctx, juggler, siteswap, beats) {
@@ -163,6 +179,7 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
         const siteswap = parseSiteswap(inputSiteswap);
         const isSync = inputSiteswap.startsWith("(");
         const juggler = getJuggler(calcIdealWorkingHeight(siteswap, canvasHeight, gravity, beatLength));
+        const fontSize = getSiteswapTextFontSize(ctx, inputSiteswap);
 
         function animateJuggler(timeStamp) {
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -176,6 +193,7 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
                 leftRotation = flipAngle(getRotation(beats, 0.5), LHoutsideThrows);
                 rightRotation = flipAngle(getRotation(beats, 1.5), RHoutsideThrows);
             }
+            drawSiteswapName(ctx, fontSize);
             drawPerson(ctx, juggler, leftRotation, rightRotation);
             if (isSync) {
                 drawSyncSiteswap(ctx, juggler, siteswap, beats)
@@ -186,7 +204,6 @@ export default function Juggler({dimension, inputSiteswap, beatLength, gravity, 
         }
 
         if (siteswap.length != 0) {
-            console.log("how")
             animationFrameId = window.requestAnimationFrame(animateJuggler);
         } else {
             showInvalidSiteSwap(ctx);

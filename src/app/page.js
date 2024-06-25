@@ -29,7 +29,7 @@ export default function Home() {
         <div className="p-2">
           <SiteswapSelector clickHandler={input => setSiteswap(input)}/>
         </div>
-        <p className="underline text-blue-600 text-center"><a href="https://en.wikipedia.org/wiki/Siteswap" target="_blank">Explanation</a></p>
+        <p className="underline text-blue-600 text-center"><a href="https://www.jugglingedge.com/help/siteswapnotes.php" target="_blank">Notation Explanation</a></p>
       </div>
       <div className="mx-10">
         <Settings updateHandler={settingsInput => setSettings(settingsInput)} currentSettings={settings}/>
